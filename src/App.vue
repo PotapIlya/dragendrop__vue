@@ -21,32 +21,39 @@
 
             <div
                  style="display: flex"
-                 v-for="(column, idx) in columns"
-                 :key="idx">
+                 v-for="(column, idxColumn) in columns"
+                 :key="idxColumn">
                 <draggable
                     style="border: 1px solid red; padding: 20px; display: inline-block "
-                    v-for="(el) in column"
-                    :key="el.name"
-                    :list="el.items"
+
+                    v-for="(el, idx) in column"
+                    :key="idx"
+                    :list=" el.items "
                     group="inputs"
                     ghost-class="ghost"
                     class="row"
+
+                    v-if="el.name !== null"
+
+                    :class=" el.items[0] ? 'width_'+ el.items[0].width : '' "
 
                     @change="checkOneElemChange"
                     @end="checkOneElemEnd"
                     @start="checkOneElemStart"
 
-
                 >
-                    <div v-for="(item, idx) in el.items"
-                         :key="idx"
-                         class="elem" style="display: flex; justify-content: space-between"
-                    >
-                        <span>{{ item.desc }}</span>
+                    <div
+                        v-if="el.items[0]"
+                         class="elem"
 
-                        <draggable @unchoose="resetWidthElem">
-                            <button> > </button>
-                        </draggable>
+                         style="display: flex; justify-content: space-between"
+                    >
+                        <span>{{ el.items[0].width }}</span>
+                        <span>{{ el.items[0].desc }}</span>
+                        <button @click="resetWidthElem(idxColumn, el)"> > </button>
+                    </div>
+                    <div v-if="el.items[1]">
+                        {{ el.items[1] }}
                     </div>
                 </draggable>
             </div>
@@ -72,26 +79,16 @@
             defaultArr: [],
             columns: [
                 [
+                    { name: 0, items: [] },
                     { name: 1, items: [] },
                     { name: 2, items: [] },
                     { name: 3, items: [] },
-                    { name: 4, items: [] },
                 ]
             ],
-            statusAddRow: false,
+            lastElem : {}
         }),
-        watch: {
-            // columns(){
-            //     // console.log(this.columns);
-            // }
-        },
         mounted() {
             this.defaultArr = json.BlockpageSearcher.fields
-
-            // console.log(json.BlockpageSearcher.fields)
-            // for (let i = 0; i < 5; i++){
-            //     this.defaultArr.push({name: 'potap_'+  Math.floor(Math.random() * 1000)})
-            // }
         },
         methods: {
             onDrop(){
@@ -103,64 +100,67 @@
             checkOneElemEnd(data){
                 console.log(data)
                 if (data.to.childElementCount === 2){
-                    this.statusAddRow = true;
-                }
 
-                // console.log(data, 'checkOneElemEnd')
+                    console.log('tes')
+                    this.addRow(this.lastElem)
+
+                    this.columns.forEach(column => {
+                        column.forEach(el => {
+                            if (el.items.length === 2){
+                                el.items.splice(1, 1)
+                            }
+                        })
+                    })
+                }
             },
             checkOneElemChange(data) {
-                if (data.added){
-                    // console.log(data.added)
-                    if (this.statusAddRow){
-                        this.addRow(data.added.element)
+                if (data.added) this.lastElem = data.added.element
 
-                        // console.log(this.columns)
-                        this.columns.forEach(column => {
-                            column.forEach(el => {
-                                if (el.items.length === 2){
-                                    el.items.splice(1, 1)
-                                }
-                            })
-                        })
-                    }
-                    // console.log(data, 'added')
-                }
-                // if (data.removed){
-                //     // console.log(data, 'removed')
-                // }
             },
             addRow(obj){
                 if ( this.columns[this.columns.length - 1 ][0].items.length ){
 
-
                     if (obj.desc){
                         // console.log(obj)
                         this.columns.push([
-                            { name: 1, items: [obj] },
+                            { name: 0, items: [obj] },
+                            { name: 1, items: [] },
                             { name: 2, items: [] },
-                            { name: 3, items: [] },
-                            { name: 4, items: [] }
+                            { name: 3, items: [] }
                         ])
                     } else {
                         this.columns.push([
+                            { name: 0, items: [] },
                             { name: 1, items: [] },
                             { name: 2, items: [] },
-                            { name: 3, items: [] },
-                            { name: 4, items: [] }
+                            { name: 3, items: [] }
                         ])
                     }
-
-                    // console.log(this.columns)
                 } else {
                     alert('Заполните первое поле')
                 }
             },
-            resetWidthElem(data){
-                console.log(data, 'resetWidthElem')
-                // const width = data.path[1].style.width;
-                //
-                // data.path[1].style.width = width + 10
-                // console.log(data.path[1].style.width += 10 +'px' )
+
+            resetWidthElem(row, column){
+                let widthElem = this.columns[row][column.name].items[0].width
+
+                if (this.columns[row][column.name+widthElem] && !this.columns[row][column.name+widthElem].items.length){
+
+                    this.columns[row].splice( column.name+widthElem, 1,{ name: null, items: [] })
+
+                    const emptyEl = this.columns[row].reduce((acc, el) => {
+                        if (el.name !== null && el.items[0]){
+                            acc -= el.items[0].width;
+                            return acc
+                        }
+                        return acc;
+                    }, 4)
+                    if (emptyEl){
+                        this.columns[row][column.name].items[0].width += 1
+                    }
+                }
+
+                // console.log(emptyEl)
             }
         },
     }
@@ -186,14 +186,27 @@
         padding: 10px;
         font-size: 16px;
     }
-    .ghost{
-        opacity: 0.5;
-        background: #999;
-        border: 1px solid #999;
-    }
     .row{
         min-height: 30px;
         display: flex;
         width: 25%;
     }
+    .width_1{
+        width: 25%;
+    }
+    .width_2{
+        width: 50%;
+    }
+    .width_3{
+        width: 75%;
+    }
+    .width_4{
+        width: 100%;
+    }
+    .ghost{
+        opacity: 0.5;
+        background: #999;
+        border: 1px solid #999;
+    }
+
 </style>

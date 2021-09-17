@@ -6,67 +6,78 @@ export default {
                 "desc": "Пункт продажи",
                 "type": "SELECT",
                 "query": "sale_point_main",
-                "active": true
+                "active": true,
+                "width": 1
             },
             {
                 "desc": "Эл. билет",
                 "type": "BOOLEAN",
                 "query": "flag_e_ticket",
-                "active": true
+                "active": true,
+                "width": 1
             },
             {
                 "desc": "ИПТ?",
                 "type": "BOOLEAN",
                 "query": "flag_ipt",
-                "active": true
+                "active": true,
+                "width": 1
             },
             {
                 "desc": "Возврат",
                 "type": "BOOLEAN",
                 "query": "flag_return",
-                "active": true
+                "active": true,
+                "width": 1
             },
             {
                 "desc": "Из-за того что либо название нас. пунка, либо станции",
                 "type": "SELECT",
                 "query": "sale_city_locale",
-                "active": false
+                "active": false,
+                "width": 1
             },
             {
                 "desc": "",
                 "type": "SELECT",
                 "query": "region",
-                "active": false
+                "active": false,
+                "width": 1
             },
             {
                 "desc": "Организация",
                 "type": "BOOLEAN",
                 "query": "flag_org_group",
-                "active": true
+                "active": true,
+                "width": 1
             },
             {
                 "desc": "Дальний",
                 "type": "BOOLEAN",
                 "query": "long_distance",
-                "active": true
+                "active": true,
+                "width": 1
             },
             {
                 "desc": "Ближний",
                 "type": "BOOLEAN",
                 "query": "suburban",
-                "active": true
+                "active": true,
+                "width": 1
             },
             {
                 "desc": "Отложенно",
                 "type": "BOOLEAN",
                 "query": "flag_deferred_payment",
-                "active": true
+                "active": true,
+                "width": 1
             },
             {
                 "desc": "Межнационально",
                 "type": "BOOLEAN",
                 "query": "flag_international",
-                "active": true
+                "active": true,
+                "width": 1
             }
         ]
     }
