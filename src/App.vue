@@ -46,7 +46,8 @@
                         style="display: flex; justify-content: space-between"
 
                     >
-                        <span>{{ el.items[0].width }}</span>
+                        <span>{{ el.items[0].width }} ) </span>
+                        <span>{{ idxRow }} - {{ el.name }}</span>
                         <span>{{ el.items[0].desc }}</span>
                         <div style="display: flex">
                             <button @click="changeWidthElem(Number(idxRow), Number(el.name), '-')"> < </button>

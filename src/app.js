@@ -91,6 +91,10 @@ export default {
                             { name: 3, items: [] },
                         ]
                     )
+                    // при добавление строки через перетаскивание элеменита (2рой элемент), обнуляем этот элемент
+                    this.updateCoords(this.rows.length -1, 0)
+                    this.removeNameToNull(true)
+
                 } else {
                     this.rows.push(
                         [
@@ -113,14 +117,17 @@ export default {
                 this.resetWidth()
                 return
             }
+
             // следом есть еще один объект
             if (this.rows[this.coordToRow][this.coordToColumn + this.toElemWidth -1 ].items.length){
-                this.removeNameToNull(true, true)
+               // console.log('3')
+                this.removeNameToNull(true)
                 this.resetWidth()
                 return
             }
             // для 3рех блоков, чтобы не съело при перетаскивание на новую строку
             if (this.toElemWidth === 3 && (this.rows[this.coordToRow][this.coordToColumn + this.toElemWidth -2 ].items.length) ){
+            //    console.log('4')
                 this.removeNameToNull(true, true)
                 this.resetWidth()
                 return
@@ -129,11 +136,11 @@ export default {
             if (this.toElemWidth === 4 && (this.rows[this.coordToRow][this.coordToColumn + this.toElemWidth -2 ].items.length ||
                 this.rows[this.coordToRow][this.coordToColumn + this.toElemWidth -3 ].items.length)
             ){
+                //console.log('5')
                 this.removeNameToNull(true, true)
                 this.resetWidth()
                 return
             }
-
 
             this.removeNameToNull(true)
             this.addNameToNull(true)
@@ -175,11 +182,15 @@ export default {
         },
         removeNameToNull(move, reset = false) {
             // reset
+
+          //  console.log(console.log(this.toElem))
             if (reset){
+             //   console.log(this.toElemWidth)
                 if (this.toElemWidth === 3){  // если 3, берем элемент и закрываем 2 прошлых
                    this.forThreeElWidth()
                 }
                 else if(this.toElemWidth === 4){  // если 3, берем элемент и закрываем 3 прошлых
+                //    console.log('YEs')
                     this.forThreeElWidth()
                     this.rows[this.coordFromRow][this.coordFromColumn + this.toElemWidth -3].name = this.coordFromColumn + this.toElemWidth -3
                 }
@@ -203,11 +214,12 @@ export default {
             else {
                 this.rows[this.coordToRow][this.coordToColumn + this.toElemWidth ].name = this.coordToColumn + this.toElemWidth
             }
-           // this.debag()
+            this.debag()
         },
         addNameToNull(move = false){
             // перетащиил и 4 элемента
             if (move && this.toElemWidth === 4){
+
                 this.rows[this.coordToRow][this.coordToColumn + this.toElemWidth-1 ].name = null
                 this.rows[this.coordToRow][this.coordToColumn + this.toElemWidth-2 ].name = null
                 this.rows[this.coordToRow][this.coordToColumn + this.toElemWidth-3 ].name = null
@@ -225,7 +237,7 @@ export default {
             else {
                 this.rows[this.coordToRow][this.coordToColumn + this.toElemWidth-1 ].name = null
             }
-             this.debag()
+           //  this.debag()
         },
         increaseWidthElem(){ // +
             this.rows[this.coordToRow][this.coordToColumn].items[0].width += 1
