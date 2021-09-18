@@ -8,7 +8,6 @@
                     ghost-class="ghost"
                     style="border: 1px solid red; padding: 20px; "
 
-
                     @end="checkOneElemEnd"
             >
                 <div v-for="(item, idx) in defaultArr" :key="idx">
@@ -21,150 +20,51 @@
 
             <div
                  style="display: flex"
-                 v-for="(column, idxColumn) in columns"
-                 :key="idxColumn">
+                 v-for="(row, idxRow) in rows"
+                 :key="idxRow">
                 <draggable
-                    style="border: 1px solid red; padding: 20px; display: inline-block "
+                    v-for="(el, idx) in row"
+                    v-if="el.name !== null"
 
-                    v-for="(el, idx) in column"
                     :key="idx"
                     :list=" el.items "
                     group="inputs"
                     ghost-class="ghost"
                     class="row"
-
-                    v-if="el.name !== null"
+                    style="border: 1px solid red; padding: 20px; display: inline-block "
 
                     :class=" el.items[0] ? 'width_'+ el.items[0].width : '' "
 
-                    @change="checkOneElemChange"
-                    @end="checkOneElemEnd"
-                    @start="checkOneElemStart"
+                    :data-column="el.name"
+                    :data-row="idxRow"
 
+                    @end="checkOneElemEnd"
                 >
                     <div
-                        v-if="el.items[0]"
-                         class="elem"
+                        v-if="el.items.length"
+                        class="elem"
+                        style="display: flex; justify-content: space-between"
 
-                         style="display: flex; justify-content: space-between"
                     >
                         <span>{{ el.items[0].width }}</span>
                         <span>{{ el.items[0].desc }}</span>
-                        <button @click="resetWidthElem(idxColumn, el)"> > </button>
-                    </div>
-                    <div v-if="el.items[1]">
-                        {{ el.items[1] }}
+                        <div style="display: flex">
+                            <button @click="changeWidthElem(Number(idxRow), Number(el.name), '-')"> < </button>
+                            <button @click="changeWidthElem(Number(idxRow), Number(el.name), '+')"> > </button>
+                        </div>
                     </div>
                 </draggable>
             </div>
 
            <div style="display: flex; justify-content: center">
-               <button @click="addRow" class="addRow">addRow</button>
+               <button @click="addRow" class="addRow" v-if="defaultArr.length">addRow {{ defaultArr.length }}</button>
            </div>
 
         </div>
     </div>
 </template>
 
-<script>
-    import draggable from 'vuedraggable'
-    import json from './json'
-
-    export default {
-        name: 'App',
-        components: {
-            draggable
-        },
-        data: () => ({
-            defaultArr: [],
-            columns: [
-                [
-                    { name: 0, items: [] },
-                    { name: 1, items: [] },
-                    { name: 2, items: [] },
-                    { name: 3, items: [] },
-                ]
-            ],
-            lastElem : {}
-        }),
-        mounted() {
-            this.defaultArr = json.BlockpageSearcher.fields
-        },
-        methods: {
-            onDrop(){
-            // //     console.log(data, 'onDrop')
-            },
-            checkOneElemStart(){
-            //     console.log(data, 'checkOneElemStart')
-            },
-            checkOneElemEnd(data){
-                console.log(data)
-                if (data.to.childElementCount === 2){
-
-                    console.log('tes')
-                    this.addRow(this.lastElem)
-
-                    this.columns.forEach(column => {
-                        column.forEach(el => {
-                            if (el.items.length === 2){
-                                el.items.splice(1, 1)
-                            }
-                        })
-                    })
-                }
-            },
-            checkOneElemChange(data) {
-                if (data.added) this.lastElem = data.added.element
-
-            },
-            addRow(obj){
-                if ( this.columns[this.columns.length - 1 ][0].items.length ){
-
-                    if (obj.desc){
-                        // console.log(obj)
-                        this.columns.push([
-                            { name: 0, items: [obj] },
-                            { name: 1, items: [] },
-                            { name: 2, items: [] },
-                            { name: 3, items: [] }
-                        ])
-                    } else {
-                        this.columns.push([
-                            { name: 0, items: [] },
-                            { name: 1, items: [] },
-                            { name: 2, items: [] },
-                            { name: 3, items: [] }
-                        ])
-                    }
-                } else {
-                    alert('Заполните первое поле')
-                }
-            },
-
-            resetWidthElem(row, column){
-                let widthElem = this.columns[row][column.name].items[0].width
-
-                if (this.columns[row][column.name+widthElem] && !this.columns[row][column.name+widthElem].items.length){
-
-                    this.columns[row].splice( column.name+widthElem, 1,{ name: null, items: [] })
-
-                    const emptyEl = this.columns[row].reduce((acc, el) => {
-                        if (el.name !== null && el.items[0]){
-                            acc -= el.items[0].width;
-                            return acc
-                        }
-                        return acc;
-                    }, 4)
-                    if (emptyEl){
-                        this.columns[row][column.name].items[0].width += 1
-                    }
-                }
-
-                // console.log(emptyEl)
-            }
-        },
-    }
-</script>
+<script src="./app.js"></script>
 
 <style>
     .addRow{
