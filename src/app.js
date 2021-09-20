@@ -1,4 +1,3 @@
-
 import draggable from 'vuedraggable'
 import json from './json'
 
@@ -31,7 +30,12 @@ export default {
         toElemWidth: null, // нынешняя длина элемента
     }),
     mounted() {
-        this.defaultArr = json.BlockpageSearcher.fields
+        this.defaultArr = json.BlockpageSearcher.fields.reduce((app, el) => {
+            if (el.active){
+                app.push(el)
+            }
+            return app;
+        }, [])
     },
     watch: {
 
@@ -62,6 +66,12 @@ export default {
 
                 this.twoElemInOneBlock()
                 if (this.toElemWidth !== 1) this.updateMove()
+            } else { // перетащили обратно в кеш
+                console.log(12)
+                this.removeNameToNull(true)
+                // console.log(
+                //     data.from.dataset
+                // )
             }
 
         },
@@ -182,8 +192,6 @@ export default {
         },
         removeNameToNull(move, reset = false) {
             // reset
-
-          //  console.log(console.log(this.toElem))
             if (reset){
              //   console.log(this.toElemWidth)
                 if (this.toElemWidth === 3){  // если 3, берем элемент и закрываем 2 прошлых
@@ -204,6 +212,7 @@ export default {
                 this.rows[this.coordFromRow][this.coordFromColumn + this.toElemWidth -3].name = this.coordFromColumn + this.toElemWidth -3
             }
             if (move && this.toElemWidth === 3){  // перетащиил и 3 элемента
+                console.log('12345')
                 this.forThreeElWidth()
             }
             // перетащиил
@@ -251,6 +260,17 @@ export default {
             this.rows[this.coordToRow][this.coordToColumn].items[0].width = 1;
             this.updateWidthElem()
         },
+        // getJson(){
+        //     const res = this.rows.reduce((app, row) => {
+        //         row.map(el => {
+        //             if (el.items.length){
+        //                 app.push(el)
+        //             }
+        //         })
+        //         return app;
+        //     }, [])
+        //     console.log(res)
+        // },
         debag(){
             console.log('---START---')
             this.rows.forEach((row,idx) => {

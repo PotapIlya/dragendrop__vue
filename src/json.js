@@ -7,7 +7,11 @@ export default {
                 "type": "SELECT",
                 "query": "sale_point_main",
                 "active": true,
-                "width": 1
+                "width": 1,
+                "coords": {
+                    "row" : null,
+                    "column" : null
+                }
             },
             {
                 "desc": "Эл. билет",

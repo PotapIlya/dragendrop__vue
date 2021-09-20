@@ -58,7 +58,19 @@
             </div>
 
            <div style="display: flex; justify-content: center">
-               <button @click="addRow" class="addRow" v-if="defaultArr.length">addRow {{ defaultArr.length }}</button>
+               <button
+                       @click="addRow"
+                       class="addRow"
+                       v-if="defaultArr.length"
+               >
+                   addRow
+               </button>
+<!--               <button-->
+<!--                       @click="getJson"-->
+<!--                       class="addRow"-->
+<!--               >-->
+<!--                   getJson-->
+<!--               </button>-->
            </div>
 
         </div>
