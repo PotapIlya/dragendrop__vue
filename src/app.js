@@ -36,6 +36,7 @@ export default {
             }
             return app;
         }, [])
+        console.log(this.defaultArr.length)
     },
     watch: {
 
