@@ -49,26 +49,28 @@ export default new Vuex.Store({
   },
   mutations: {
     changeRowWidth({rows}, {idxRow, idxCol}) {
-      const findElemOnCoords = rows[idxRow][idxCol];
+      const findElemOnCoords = rows[idxRow][idxCol]
+
+      if (idxCol !== 0 && findElemOnCoords.item.width === 0) {
+        findElemOnCoords.item.width = idxCol;
+      }
+
+      const range = rows[idxRow][findElemOnCoords.item.width+idxCol]
+      // const range  = idxCol + findElemOnCoords.item.width + 1;
       const findNextElemOnCoords = rows[idxRow][findElemOnCoords.item.width+idxCol+1]; // если есть куда двигаться
-      // const currentPositionCol = findElemOnCoords.item.width ;
 
 
-      // if (idxCol !== 0 && findElemOnCoords.item.width === 0) {
-      //   findElemOnCoords.item.width = 1;
-      // }
-
-
-
-      if (findElemOnCoords.item.width < MAX_COLUMN && findNextElemOnCoords){
+      if ( findElemOnCoords.item.width < MAX_COLUMN && findNextElemOnCoords ){
         findElemOnCoords.item.width += 1;
-
-        // console.log(findElemOnCoords.item.width)
-
 
         // каждому последующему элементу ставим active = false
         rows[idxRow][findElemOnCoords.item.width].active = false;
       }
+
+      console.log(idxCol, 'startColumn')
+      console.log(range?.id, 'end')
+      console.log(findNextElemOnCoords?.id, 'next')
+
     },
     // срабатывает при каждом завершения перетягивания
     endMove({rows, aside}, {rowTo, colTo, idFrom}) {
